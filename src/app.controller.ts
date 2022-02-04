@@ -2,9 +2,11 @@ import {
   Body,
   Controller,
   Logger,
+  Get,
   Post,
   UsePipes,
   ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import {
   ClientProxy,
@@ -31,10 +33,12 @@ export class AppController {
 
   @Post('categories')
   @UsePipes(ValidationPipe)
-  async createCategory(@Body() createCategoryDto: CreateCategoriesDTO) {
-    return await this.clientAdminBackend.emit(
-      'create-category',
-      createCategoryDto,
-    );
+  createCategory(@Body() createCategoryDto: CreateCategoriesDTO) {
+    this.clientAdminBackend.emit('create-category', createCategoryDto);
+  }
+
+  @Get('categories')
+  findByIdCategory(@Query('id') _id: string) {
+    return this.clientAdminBackend.send('find-category', _id ? _id : '');
   }
 }
